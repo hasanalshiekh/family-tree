@@ -3,82 +3,58 @@
 namespace App\Http\Controllers;
 
 use App\Models\Family;
+
+use App\Http\Controllers\Controller;
 use App\Models\FamilyMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FamilyController extends Controller
 {
-    /**
-     * عرض صفحة إنشاء عائلة جديدة
-     */
-    public function create()
+    public function index()
     {
-        return view('family.create');
+        $families = Family::all();
+        return response()->json($families);
     }
 
-    /**
-     * حفظ عائلة جديدة
-     */
-    public function store(Request $request)
+    public function storeApi(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
         ]);
 
-        $family = Family::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'share_token' => Str::random(32)
+        $family = Family::create($request->only(['name', 'description']));
+
+        return response()->json($family, 201);
+    }
+
+    public function show($id)
+    {
+        $family = Family::findOrFail($id);
+        return response()->json($family);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $family = Family::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
         ]);
 
-        return redirect()->route('family.dashboard', $family->id)
-                        ->with('success', 'تم إنشاء العائلة بنجاح!');
+        $family->update($request->only(['name', 'description']));
+
+        return response()->json($family);
     }
 
-    /**
-     * عرض داش بورد العائلة
-     */
-    public function dashboard($id)
+    public function destroy($id)
     {
         $family = Family::findOrFail($id);
-        $members = $family->members()->orderBy('generation')->orderBy('name')->get();
-        
-        return view('family.dashboard', compact('family', 'members'));
-    }
+        $family->delete();
 
-    /**
-     * عرض شجرة العائلة
-     */
-    public function tree($id)
-    {
-        $family = Family::findOrFail($id);
-        $members = $family->members()->orderBy('generation')->orderBy('name')->get();
-        
-        return view('family.tree', compact('family', 'members'));
-    }
-
-    /**
-     * مشاركة العائلة
-     */
-    public function share($token)
-    {
-        $family = Family::where('share_token', $token)->firstOrFail();
-        $members = $family->members()->orderBy('generation')->orderBy('name')->get();
-        
-        return view('family.share', compact('family', 'members'));
-    }
-
-    /**
-     * تصدير PDF للشجرة
-     */
-    public function exportPdf($id)
-    {
-        $family = Family::findOrFail($id);
-        $members = $family->members()->orderBy('generation')->orderBy('name')->get();
-        
-        // سيتم إضافة مكتبة PDF لاحقاً
-        return view('family.pdf', compact('family', 'members'));
+        return response()->json(['message' => 'Family deleted successfully']);
     }
 }
