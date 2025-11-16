@@ -1,0 +1,6 @@
+- [x] Add missing methods to FamilyController: storeApi, show, update, destroy
+- [x] Add delete route for family members in api.php
+- [x] Test API endpoints for families
+- [x] Test API endpoints for family members
+- [x] Test share endpoint
+- [x] Verify all API responses are correct

@@ -92,35 +92,39 @@
                             </h5>
                             
                             <div class="mb-3">
-                                <label for="father_id" class="form-label fw-bold">الأب (اختياري)</label>
-                                <select class="form-select @error('father_id') is-invalid @enderror" 
-                                        id="father_id" 
-                                        name="father_id">
-                                    <option value="">اختر الأب</option>
+                                <label for="father_name" class="form-label fw-bold">الأب (اختياري - اكتب أو اختر)</label>
+                                <input type="text"
+                                       class="form-control @error('father_name') is-invalid @enderror"
+                                       id="father_name"
+                                       name="father_name"
+                                       list="fathers"
+                                       value="{{ old('father_name') }}"
+                                       placeholder="اكتب اسم الأب أو اختر من القائمة">
+                                <datalist id="fathers">
                                     @foreach($members->where('gender', 'male') as $member)
-                                        <option value="{{ $member->id }}" {{ old('father_id') == $member->id ? 'selected' : '' }}>
-                                            {{ $member->getDisplayName() }} (الجيل {{ $member->generation }})
-                                        </option>
+                                        <option value="{{ $member->getDisplayName() }}">{{ $member->getDisplayName() }} (الجيل {{ $member->generation }})</option>
                                     @endforeach
-                                </select>
-                                @error('father_id')
+                                </datalist>
+                                @error('father_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             
                             <div class="mb-3">
-                                <label for="mother_id" class="form-label fw-bold">الأم (اختياري)</label>
-                                <select class="form-select @error('mother_id') is-invalid @enderror" 
-                                        id="mother_id" 
-                                        name="mother_id">
-                                    <option value="">اختر الأم</option>
+                                <label for="mother_name" class="form-label fw-bold">الأم (اختياري - اكتب أو اختر)</label>
+                                <input type="text"
+                                       class="form-control @error('mother_name') is-invalid @enderror"
+                                       id="mother_name"
+                                       name="mother_name"
+                                       list="mothers"
+                                       value="{{ old('mother_name') }}"
+                                       placeholder="اكتب اسم الأم أو اختر من القائمة">
+                                <datalist id="mothers">
                                     @foreach($members->where('gender', 'female') as $member)
-                                        <option value="{{ $member->id }}" {{ old('mother_id') == $member->id ? 'selected' : '' }}>
-                                            {{ $member->getDisplayName() }} (الجيل {{ $member->generation }})
-                                        </option>
+                                        <option value="{{ $member->getDisplayName() }}">{{ $member->getDisplayName() }} (الجيل {{ $member->generation }})</option>
                                     @endforeach
-                                </select>
-                                @error('mother_id')
+                                </datalist>
+                                @error('mother_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

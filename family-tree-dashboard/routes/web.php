@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FamilyMemberController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 // الصفحة الرئيسية
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+// routes/web.php
+
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
+// أو إذا كنت تستخدم إصداراً قديماً من Laravel:
+// Route::get('/', 'App\Http\Controllers\HomeController@index');
 
 // إنشاء عائلة جديدة
 Route::get('/family/create', [FamilyController::class, 'create'])->name('family.create');
